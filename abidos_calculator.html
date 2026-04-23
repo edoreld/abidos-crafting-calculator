@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Abidos Crafting Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0d0b08;
+      --surface:   #161210;
+      --surface2:  #1e1a15;
+      --border:    #3a2e1e;
+      --gold:      #c9963a;
+      --gold-lt:   #e8b85a;
+      --gold-dim:  #7a5820;
+      --amber:     #f0a030;
+      --green:     #6ab570;
+      --red:       #d46060;
+      --text:      #e2d5c0;
+      --text-dim:  #8a7a60;
+      --text-muted:#4a3f2e;
+      --input-bg:  #120f0a;
+      --shadow:    0 4px 24px rgba(0,0,0,.6);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 16px;
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,150,58,.08) 0%, transparent 60%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='none'/%3E%3Cpath d='M0 0h60v60H0z' fill='url(%23g)'/%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0' stop-color='%23201800' stop-opacity='.4'/%3E%3Cstop offset='1' stop-color='%23000' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3C/svg%3E");
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+      padding: 48px 24px 32px;
+      position: relative;
+    }
+    header::after {
+      content: '';
+      display: block;
+      width: 280px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 20px auto 0;
+    }
+    .logo-ornament {
+      font-size: 11px;
+      letter-spacing: .35em;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+      font-family: 'Cinzel', serif;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(24px, 5vw, 42px);
+      font-weight: 700;
+      color: var(--gold-lt);
+      letter-spacing: .06em;
+      text-shadow: 0 0 40px rgba(201,150,58,.35);
+      line-height: 1.15;
+    }
+    h1 span { color: var(--amber); }
+    .subtitle {
+      font-style: italic;
+      color: var(--text-dim);
+      margin-top: 6px;
+      font-size: 15px;
+    }
+
+    /* ── Layout ── */
+    .wrapper {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 700px) {
+      .wrapper { grid-template-columns: 1fr; }
+      .results-section { grid-column: 1; }
+    }
+
+    .results-section {
+      grid-column: 1 / -1;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 22px 22px 18px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    }
+
+    .card-title {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Form rows ── */
+    .field-group { display: flex; flex-direction: column; gap: 10px; }
+    .field {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+    }
+    label {
+      font-size: 14px;
+      color: var(--text-dim);
+      font-style: italic;
+      line-height: 1.3;
+    }
+    label strong {
+      display: block;
+      color: var(--text);
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14.5px;
+    }
+
+    input[type="number"] {
+      width: 100px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--gold-lt);
+      font-family: 'Crimson Pro', serif;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 6px 10px;
+      text-align: right;
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+      -moz-appearance: textfield;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+    input[type="number"]:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(201,150,58,.15);
+    }
+
+    .unit {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: right;
+      margin-top: -6px;
+      font-style: italic;
+    }
+
+    /* ── Divider row ── */
+    .divider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0 4px;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .2em;
+    }
+    .divider-row::before, .divider-row::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ── Derived row ── */
+    .derived-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(58,46,30,.5);
+      font-size: 14.5px;
+    }
+    .derived-row:last-child { border-bottom: none; }
+    .derived-label { color: var(--text-dim); font-style: italic; }
+    .derived-value { font-weight: 600; color: var(--gold-lt); font-size: 15px; }
+
+    /* ── Results table ── */
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .rg-header {
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+    .rg-header:not(:last-child) { border-right: 1px solid var(--border); }
+    .rg-header.col-a { color: var(--text-muted); }
+    .rg-header.col-b { color: var(--gold); text-align: center; }
+    .rg-header.col-c { color: var(--amber); text-align: center; }
+
+    .rg-row { display: contents; }
+    .rg-cell {
+      padding: 10px 16px;
+      border-bottom: 1px solid rgba(58,46,30,.4);
+      font-size: 14.5px;
+      background: var(--surface);
+      transition: background .15s;
+    }
+    .rg-row:last-child .rg-cell { border-bottom: none; }
+    .rg-row:hover .rg-cell { background: var(--surface2); }
+    .rg-cell:not(:last-child) { border-right: 1px solid rgba(58,46,30,.4); }
+    .rg-cell.label { color: var(--text-dim); font-style: italic; }
+    .rg-cell.val { font-weight: 600; text-align: right; }
+    .rg-cell.val-b { color: var(--gold-lt); }
+    .rg-cell.val-c { color: var(--amber); }
+
+    /* ── Profit hero ── */
+    .profit-hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .profit-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 18px 20px 14px;
+      position: relative;
+      overflow: hidden;
+    }
+    .profit-card::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 2px;
+    }
+    .profit-card.col-b::before { background: linear-gradient(90deg, transparent, var(--gold-dim), transparent); }
+    .profit-card.col-c::before { background: linear-gradient(90deg, transparent, var(--amber), transparent); opacity: .5; }
+
+    .profit-card-name {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .profit-card.col-b .profit-card-name { color: var(--gold); }
+    .profit-card.col-c .profit-card-name { color: var(--amber); }
+
+    .profit-card-value {
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: -.01em;
+    }
+    .profit-card-value .pct-hint { font-size: 16px; font-weight: 400; }
+    .profit-pos { color: var(--green); }
+    .profit-neg { color: var(--red); }
+
+    /* ── Details toggle ── */
+    .details-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      padding: 10px 0 6px;
+      width: 100%;
+      transition: color .2s;
+    }
+    .details-toggle:hover { color: var(--gold); }
+    .details-toggle::before, .details-toggle::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .details-toggle .chevron {
+      display: inline-block;
+      transition: transform .25s;
+      font-style: normal;
+      font-size: 9px;
+    }
+    .details-toggle[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+
+    .details-panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows .28s ease;
+    }
+    .details-panel.open { grid-template-rows: 1fr; }
+    .details-inner { overflow: hidden; }
+    .details-inner-pad { padding-top: 10px; }
+
+    /* ── Details sub-label ── */
+    .rg-cell.sublabel {
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-style: italic;
+      background: var(--surface2);
+    }
+
+    /* ── Reset button ── */
+    .actions {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: flex-end;
+      margin-top: -8px;
+    }
+    button.reset {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      padding: 7px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: color .2s, border-color .2s;
+    }
+    button.reset:hover { color: var(--gold); border-color: var(--gold-dim); }
+
+    /* ── Saved indicator ── */
+    .saved-badge {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--surface2);
+      border: 1px solid var(--gold-dim);
+      color: var(--gold);
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      padding: 8px 14px;
+      border-radius: 4px;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity .3s, transform .3s;
+      pointer-events: none;
+    }
+    .saved-badge.show { opacity: 1; transform: translateY(0); }
+
+    /* ── Tooltip pct ── */
+    .pct-hint { font-size: 12px; color: var(--text-muted); margin-left: 2px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <p class="logo-ornament">Crafting Tool</p>
+  <h1>Abidos <span>Calculator</span></h1>
+  <p class="subtitle">Profit estimation for Abidos Timber crafting</p>
+</header>
+
+<div class="wrapper">
+
+  <!-- ── Cost Reductions ── -->
+  <div class="card">
+    <p class="card-title">Cost Reductions</p>
+    <div class="field-group">
+      <div class="field">
+        <label><strong>[Special] Cost Reduction</strong></label>
+        <input type="number" id="b1" step="0.1" min="0" max="100" placeholder="e.g. 10" value="10" />
+      </div>
+      <div class="field">
+        <label><strong>Cost Reduction</strong></label>
+        <input type="number" id="b2" step="0.1" min="0" max="100" placeholder="e.g. 7" value="7" />
+      </div>
+    </div>
+    <div class="divider-row">Derived</div>
+    <div class="derived-row">
+      <span class="derived-label">Total Cost Reduction</span>
+      <span class="derived-value" id="d-b3">—</span>
+    </div>
+  </div>
+
+  <!-- ── Great Success ── -->
+  <div class="card">
+    <p class="card-title">Great Success</p>
+    <div class="field-group">
+      <div class="field">
+        <label><strong>[Special] Great Success Chance</strong></label>
+        <input type="number" id="b5" step="0.1" min="0" max="100" placeholder="e.g. 9" value="9" />
+      </div>
+      <div class="field">
+        <label><strong>Crafting Great Success Chance</strong></label>
+        <input type="number" id="b6" step="0.1" min="0" max="100" placeholder="e.g. 5" value="5" />
+      </div>
+    </div>
+    <div class="divider-row">Derived</div>
+    <div class="derived-row">
+      <span class="derived-label">Effective GS Chance</span>
+      <span class="derived-value" id="d-b8">—</span>
+    </div>
+    <div class="derived-row">
+      <span class="derived-label">Avg Abidos per Craft</span>
+      <span class="derived-value" id="d-b24">—</span>
+    </div>
+  </div>
+
+  <!-- ── AH Prices ── -->
+  <div class="card">
+    <p class="card-title">Auction House — Material Prices</p>
+    <div class="field-group">
+      <div class="field">
+        <label><strong>Timber</strong></label>
+        <input type="number" id="e19" step="1" min="1" value="203" />
+      </div>
+      <div class="field">
+        <label><strong>Tender Timber</strong></label>
+        <input type="number" id="e20" step="1" min="1" value="422" />
+      </div>
+      <div class="field">
+        <label><strong>Abidos Timber</strong></label>
+        <input type="number" id="e21" step="1" min="1" value="2599" />
+      </div>
+    </div>
+    <div class="divider-row">Gold Prices per Unit</div>
+    <div class="derived-row">
+      <span class="derived-label">Timber</span>
+      <span class="derived-value" id="d-p19">—</span>
+    </div>
+    <div class="derived-row">
+      <span class="derived-label">Tender Timber</span>
+      <span class="derived-value" id="d-p20">—</span>
+    </div>
+    <div class="derived-row">
+      <span class="derived-label">Abidos Timber</span>
+      <span class="derived-value" id="d-p21">—</span>
+    </div>
+  </div>
+
+  <!-- ── Abidos Sale Price ── -->
+  <div class="card">
+    <p class="card-title">Abidos Sale Price</p>
+    <div class="field-group">
+      <div class="field">
+        <label><strong>Abidos Fusion Material</strong></label>
+        <input type="number" id="b26" step="1" min="1" value="213" />
+      </div>
+      <div class="field">
+        <label><strong>Superior Abidos Fusion Material</strong></label>
+        <input type="number" id="c26" step="1" min="1" value="255" />
+      </div>
+    </div>
+    <div class="divider-row">Derived</div>
+    <div class="derived-row">
+      <span class="derived-label">Fee — Abidos Fusion (5%)</span>
+      <span class="derived-value" id="d-b27">—</span>
+    </div>
+    <div class="derived-row">
+      <span class="derived-label">Fee — Superior Abidos Fusion (5%)</span>
+      <span class="derived-value" id="d-c27">—</span>
+    </div>
+  </div>
+
+  <!-- ── Results ── -->
+  <div class="card results-section">
+    <p class="card-title">Results — Per Batch</p>
+
+    <!-- Profit hero -->
+    <div class="profit-hero">
+      <div class="profit-card col-b">
+        <p class="profit-card-name">⚗ Abidos Fusion</p>
+        <div class="profit-card-value" id="r-b28">—</div>
+      </div>
+      <div class="profit-card col-c">
+        <p class="profit-card-name">⚗ Superior Abidos Fusion</p>
+        <div class="profit-card-value" id="r-c28">—</div>
+      </div>
+    </div>
+
+    <!-- Toggle -->
+    <button class="details-toggle" aria-expanded="false" onclick="toggleDetails(this)">
+      <i class="chevron">▼</i> Show breakdown <i class="chevron">▼</i>
+    </button>
+
+    <!-- Collapsible details -->
+    <div class="details-panel" id="details-panel">
+      <div class="details-inner">
+        <div class="details-inner-pad">
+          <div class="results-grid">
+            <div class="rg-header col-a">Metric</div>
+            <div class="rg-header col-b">Abidos Fusion</div>
+            <div class="rg-header col-c">Superior Abidos Fusion</div>
+
+            <div class="rg-row">
+              <div class="rg-cell sublabel">Gold Cost</div>
+              <div class="rg-cell sublabel"></div>
+              <div class="rg-cell sublabel"></div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label">Base Gold Cost</div>
+              <div class="rg-cell val val-b">400 g</div>
+              <div class="rg-cell val val-c">520 g</div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label">Net Gold Cost (after reduction)</div>
+              <div class="rg-cell val val-b" id="r-b11">—</div>
+              <div class="rg-cell val val-c" id="r-c11">—</div>
+            </div>
+
+            <div class="rg-row">
+              <div class="rg-cell sublabel">Material Quantities</div>
+              <div class="rg-cell sublabel"></div>
+              <div class="rg-cell sublabel"></div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label">Timber</div>
+              <div class="rg-cell val val-b">86</div>
+              <div class="rg-cell val val-c">112</div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label">Tender Timber</div>
+              <div class="rg-cell val val-b">45</div>
+              <div class="rg-cell val val-c">59</div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label">Abidos Timber</div>
+              <div class="rg-cell val val-b">33</div>
+              <div class="rg-cell val val-c">43</div>
+            </div>
+
+            <div class="rg-row">
+              <div class="rg-cell sublabel">Batch Economics</div>
+              <div class="rg-cell sublabel"></div>
+              <div class="rg-cell sublabel"></div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label">Total Cost per Batch</div>
+              <div class="rg-cell val val-b" id="r-b23">—</div>
+              <div class="rg-cell val val-c" id="r-c23">—</div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label">Avg Abidos per Craft</div>
+              <div class="rg-cell val val-b" id="r-b24b">—</div>
+              <div class="rg-cell val val-c" id="r-c24">—</div>
+            </div>
+
+            <div class="rg-row">
+              <div class="rg-cell sublabel">Sale</div>
+              <div class="rg-cell sublabel"></div>
+              <div class="rg-cell sublabel"></div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label">Sale Price / Abidos</div>
+              <div class="rg-cell val val-b" id="r-b26">—</div>
+              <div class="rg-cell val val-c" id="r-c26">—</div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label">AH Fee / Sale (5%)</div>
+              <div class="rg-cell val val-b" id="r-b27">—</div>
+              <div class="rg-cell val val-c" id="r-c27">—</div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label">Net per Abidos</div>
+              <div class="rg-cell val val-b" id="r-bnet">—</div>
+              <div class="rg-cell val val-c" id="r-cnet">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="reset" onclick="resetDefaults()">↺ Reset to defaults</button>
+  </div>
+
+</div>
+
+<div class="saved-badge" id="saved-badge">Saved ✓</div>
+
+<script>
+  const DEFAULTS = {
+    b1: 10, b2: 7,
+    b5: 9, b6: 5,
+    e19: 203, e20: 422, e21: 2599,
+    b26: 213, c26: 255
+  };
+  const FIELDS = Object.keys(DEFAULTS);
+  const LS_KEY = 'abidos_calc_v2';
+
+  // ── Constants (recipe quantities / base costs) ──
+  const R = {
+    b: { baseGold: 400, baseCost: 400, timber: 86, tender: 45, abidos: 33 },
+    c: { baseGold: 520, baseCost: 529, timber: 112, tender: 59, abidos: 43 }
+  };
+
+  function load() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+      FIELDS.forEach(k => {
+        const el = document.getElementById(k);
+        if (!el) return;
+        el.value = saved[k] !== undefined ? saved[k] : DEFAULTS[k];
+      });
+    } catch(e) {}
+  }
+
+  function save() {
+    const obj = {};
+    FIELDS.forEach(k => {
+      const el = document.getElementById(k);
+      if (el) obj[k] = parseFloat(el.value);
+    });
+    try { localStorage.setItem(LS_KEY, JSON.stringify(obj)); } catch(e) {}
+    flashSaved();
+  }
+
+  let saveTimer;
+  function flashSaved() {
+    clearTimeout(saveTimer);
+    const b = document.getElementById('saved-badge');
+    b.classList.add('show');
+    saveTimer = setTimeout(() => b.classList.remove('show'), 1600);
+  }
+
+  function resetDefaults() {
+    FIELDS.forEach(k => {
+      const el = document.getElementById(k);
+      if (el) el.value = DEFAULTS[k];
+    });
+    try { localStorage.removeItem(LS_KEY); } catch(e) {}
+    recalc();
+  }
+
+  function g(id) { return parseFloat(document.getElementById(id).value) || 0; }
+  function set(id, html) { const el = document.getElementById(id); if(el) el.innerHTML = html; }
+
+  function fmtGold(v, decimals=2) {
+    return v.toFixed(decimals) + ' <span class="pct-hint">g</span>';
+  }
+  function fmtPct(v) {
+    return (v * 100).toFixed(2) + ' <span class="pct-hint">%</span>';
+  }
+  function fmtNum(v, d=3) { return v.toFixed(d); }
+
+  function ceilTo1(v) { return Math.ceil(v); }
+
+  function recalc() {
+    const b1 = g('b1')/100, b2 = g('b2')/100;
+    const b5 = g('b5')/100, b6 = g('b6')/100;
+    const e19 = g('e19'), e20 = g('e20'), e21 = g('e21');
+    const b26 = g('b26'), c26 = g('c26');
+
+    // B3: Total Cost Reduction
+    const b3 = b1 + b2;
+    set('d-b3', fmtPct(b3));
+
+    // B8: Effective GS Chance = b6 * (1 + b5)
+    const b8 = b6 * (1 + b5);
+    set('d-b8', fmtPct(b8));
+
+    // B24: Avg Abidos per craft = 10*(1-b8) + 20*b8
+    const b24 = 10 * (1 - b8) + 20 * b8;
+    set('d-b24', fmtNum(b24, 4));
+
+    // Prices in gold
+    const p19 = e19 / 100, p20 = e20 / 100, p21 = e21 / 100;
+    set('d-p19', fmtGold(p19));
+    set('d-p20', fmtGold(p20));
+    set('d-p21', fmtGold(p21));
+
+    // Net Gold Cost
+    // B: B10 * (1 - b3)
+    const b11 = R.b.baseGold * (1 - b3);
+    // C: FLOOR(C10 * (1-b3), 1)
+    const c11 = Math.floor(R.c.baseGold * (1 - b3));
+    set('r-b11', fmtGold(b11, 2));
+    set('r-c11', fmtGold(c11, 0));
+
+    // Cost per batch
+    // B: (baseCost*(1-b3)) + timber*p19 + tender*p20 + abidos*p21
+    const b23 = (R.b.baseCost * (1 - b3)) + (R.b.timber * p19) + (R.b.tender * p20) + (R.b.abidos * p21);
+    const c23 = (R.c.baseCost * (1 - b3)) + (R.c.timber * p19) + (R.c.tender * p20) + (R.c.abidos * p21);
+    set('r-b23', fmtGold(b23));
+    set('r-c23', fmtGold(c23));
+
+    // Avg per craft (same for both cols)
+    set('r-b24b', fmtNum(b24, 4));
+    set('r-c24', fmtNum(b24, 4));
+
+    // Sale prices
+    set('r-b26', fmtGold(b26, 0));
+    set('r-c26', fmtGold(c26, 0));
+
+    // Fee = CEILING(price * 0.05, 1)
+    const b27 = Math.ceil(b26 * 0.05);
+    const c27 = Math.ceil(c26 * 0.05);
+    set('d-b27', fmtGold(b27, 0));
+    set('d-c27', fmtGold(c27, 0));
+    set('r-b27', fmtGold(b27, 0));
+    set('r-c27', fmtGold(c27, 0));
+
+    // Net per Abidos (sale - fee)
+    set('r-bnet', fmtGold(b26 - b27, 0));
+    set('r-cnet', fmtGold(c26 - c27, 0));
+
+    // Expected Profit = b24 * (price - fee) - costPerBatch
+    const b28 = b24 * (b26 - b27) - b23;
+    const c28 = b24 * (c26 - c27) - c23;
+
+    const profitHero = (v, id) => {
+      const cls = v >= 0 ? 'profit-pos' : 'profit-neg';
+      const sign = v >= 0 ? '+' : '';
+      set(id, `<span class="${cls}">${sign}${fmtGold(v)}</span>`);
+    };
+    profitHero(b28, 'r-b28');
+    profitHero(c28, 'r-c28');
+  }
+
+  function toggleDetails(btn) {
+    const panel = document.getElementById('details-panel');
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', !open);
+    panel.classList.toggle('open', !open);
+    btn.querySelector('.chevron:first-child').style.transform = !open ? 'rotate(180deg)' : '';
+    const label = !open ? 'Hide breakdown' : 'Show breakdown';
+    btn.childNodes[2].textContent = ` ${label} `;
+  }
+
+  function onInput() { recalc(); save(); }
+
+  FIELDS.forEach(k => {
+    const el = document.getElementById(k);
+    if (el) el.addEventListener('input', onInput);
+  });
+
+  load();
+  recalc();
+</script>
+</body>
+</html>
