@@ -178,13 +178,6 @@
       font-weight: 600;
       font-size: 14.5px;
     }
-    label .label-sub {
-      display: block;
-      font-size: 12px;
-      font-style: italic;
-      color: var(--text-muted);
-      margin-top: 1px;
-    }
 
     input[type="number"] {
       width: 100px;
@@ -471,15 +464,15 @@
     <p class="card-title">Auction House — Material Prices</p>
     <div class="field-group">
       <div class="field">
-        <label><strong id="lbl-mat-1">Normal Material</strong><span class="label-sub" id="sub-mat-1">...</span></label>
+        <label><strong id="lbl-mat-1">Normal Material</strong></label>
         <input type="number" id="e19" step="1" min="1" />
       </div>
       <div class="field">
-        <label><strong id="lbl-mat-2">Uncommon Material</strong><span class="label-sub" id="sub-mat-2">...</span></label>
+        <label><strong id="lbl-mat-2">Uncommon Material</strong></label>
         <input type="number" id="e20" step="1" min="1" />
       </div>
       <div class="field">
-        <label><strong id="lbl-mat-3">Rare Material</strong><span class="label-sub" id="sub-mat-3">...</span></label>
+        <label><strong id="lbl-mat-3">Rare Material</strong></label>
         <input type="number" id="e21" step="1" min="1" />
       </div>
     </div>
@@ -558,7 +551,6 @@
               <div class="rg-cell val val-c">520 g</div>
             </div>
             <div class="rg-row">
-              <div class="rg-cell label">Net Gold Cost (after reduction)</div>
               <div class="rg-cell val val-b" id="r-b11">—</div>
               <div class="rg-cell val val-c" id="r-c11">—</div>
             </div>
@@ -662,7 +654,6 @@
   };
 
   function init() {
-    // Generate tabs
     const nav = document.getElementById('tabs-nav');
     PROFESSIONS.forEach(p => {
       const btn = document.createElement('button');
@@ -688,7 +679,6 @@
       }
     } catch(e) {}
     
-    // Ensure every profession has a data object
     PROFESSIONS.forEach(p => {
       if (!store[p.id]) store[p.id] = { ...DEFAULTS };
     });
@@ -705,7 +695,8 @@
   function switchTab(id) {
     currentTab = id;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(`btn-${id}`).classList.add('active');
+    const activeBtn = document.getElementById(`btn-${id}`);
+    if(activeBtn) activeBtn.classList.add('active');
     
     updateLabels();
     fillInputs();
@@ -715,20 +706,15 @@
 
   function updateLabels() {
     const p = PROFESSIONS.find(x => x.id === currentTab);
-    // AH Price Labels
+    
     document.getElementById('lbl-mat-1').textContent = p.mats[0];
     document.getElementById('lbl-mat-2').textContent = p.mats[1];
     document.getElementById('lbl-mat-3').textContent = p.mats[2];
-    document.getElementById('sub-mat-1').textContent = `i.e.: ${p.mats[0]}`;
-    document.getElementById('sub-mat-2').textContent = `i.e.: ${p.mats[1]}`;
-    document.getElementById('sub-mat-3').textContent = `i.e.: ${p.mats[2]}`;
     
-    // Derived Labels
     document.getElementById('der-mat-1').textContent = p.mats[0];
     document.getElementById('der-mat-2').textContent = p.mats[1];
     document.getElementById('der-mat-3').textContent = p.mats[2];
 
-    // Breakdown Labels
     document.getElementById('br-mat-1').textContent = p.mats[0];
     document.getElementById('br-mat-2').textContent = p.mats[1];
     document.getElementById('br-mat-3').textContent = p.mats[2];
@@ -758,7 +744,6 @@
     saveStore();
   }
 
-  // --- Logic Helpers ---
   function g(id) { return parseFloat(document.getElementById(id).value) || 0; }
   function set(id, html) { const el = document.getElementById(id); if(el) el.innerHTML = html; }
   function fmtGold(v, decimals=2) { return v.toFixed(decimals) + ' <span class="pct-hint">g</span>'; }
@@ -787,8 +772,8 @@
 
     const b11 = R.b.baseGold * (1 - b3);
     const c11 = Math.floor(R.c.baseGold * (1 - b3));
-    set('r-b11', fmtGold(b11, 2));
-    set('r-c11', fmtGold(c11, 0));
+    set('r-b11', `Net Gold Cost (after reduction): ${fmtGold(b11, 2)}`);
+    set('r-c11', `Net Gold Cost (after reduction): ${fmtGold(c11, 0)}`);
 
     const b23 = (R.b.baseCost * (1 - b3)) + (R.b.timber * p19) + (R.b.tender * p20) + (R.b.abidos * p21);
     const c23 = (R.c.baseCost * (1 - b3)) + (R.c.timber * p19) + (R.c.tender * p20) + (R.c.abidos * p21);
@@ -828,9 +813,10 @@
     const open = btn.getAttribute('aria-expanded') === 'true';
     btn.setAttribute('aria-expanded', !open);
     panel.classList.toggle('open', !open);
-    btn.querySelector('.chevron:first-child').style.transform = !open ? 'rotate(180deg)' : '';
+    const chevrons = btn.querySelectorAll('.chevron');
+    chevrons.forEach(c => c.style.transform = !open ? 'rotate(180deg)' : '');
     const label = !open ? 'Hide breakdown' : 'Show breakdown';
-    btn.childNodes[2].textContent = ` ${label} `;
+    btn.childNodes[1].textContent = ` ${label} `;
   }
 
   let saveTimer;
@@ -845,7 +831,6 @@
     document.getElementById(id).addEventListener('input', onInput);
   });
 
-  // Start
   init();
 </script>
 </body>
