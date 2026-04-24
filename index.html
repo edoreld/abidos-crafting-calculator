@@ -4,449 +4,610 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Abidos Crafting Calculator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #fafafa;
-      --surface: #ffffff;
-      --surface-alt: #f4f4f5;
-      --border: #e4e4e7;
-      --text-main: #09090b;
-      --text-muted: #71717a;
-      --primary: #10b981; /* Emerald */
-      --primary-dark: #059669;
-      --accent: #3b82f6; /* Blue for sale prices */
-      --danger: #ef4444;
-      --success: #10b981;
-      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-      --radius: 8px;
+      --bg:        #0d0b08;
+      --surface:   #161210;
+      --surface2:  #1e1a15;
+      --border:    #3a2e1e;
+      --gold:      #c9963a;
+      --gold-lt:   #e8b85a;
+      --gold-dim:  #7a5820;
+      --amber:     #f0a030;
+      --green:     #6ab570;
+      --red:       #d46060;
+      --text:      #e2d5c0;
+      --text-dim:  #8a7a60;
+      --text-muted:#4a3f2e;
+      --input-bg:  #120f0a;
+      --shadow:    0 4px 24px rgba(0,0,0,.6);
     }
 
-    /* Dark Mode support */
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #09090b;
-        --surface: #18181b;
-        --surface-alt: #27272a;
-        --border: #27272a;
-        --text-main: #fafafa;
-        --text-muted: #a1a1aa;
-        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3);
-      }
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background-color: var(--bg);
-      color: var(--text-main);
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-      padding: 2rem 1rem;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 16px;
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,150,58,.08) 0%, transparent 60%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='none'/%3E%3Cpath d='M0 0h60v60H0z' fill='url(%23g)'/%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0' stop-color='%23201800' stop-opacity='.4'/%3E%3Cstop offset='1' stop-color='%23000' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3C/svg%3E");
     }
 
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    /* --- Header --- */
     header {
-      margin-bottom: 2rem;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 1.5rem;
+      text-align: center;
+      padding: 40px 24px 20px;
+      position: relative;
     }
-
+    .logo-ornament {
+      font-size: 11px;
+      letter-spacing: .35em;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+      font-family: 'Cinzel', serif;
+      margin-bottom: 10px;
+    }
     h1 {
-      font-size: 1.875rem;
+      font-family: 'Cinzel', serif;
+      font-size: clamp(24px, 5vw, 42px);
       font-weight: 700;
-      letter-spacing: -0.025em;
+      color: var(--gold-lt);
+      letter-spacing: .06em;
+      text-shadow: 0 0 40px rgba(201,150,58,.35);
+      line-height: 1.15;
     }
-
-    h1 span { color: var(--primary); }
-
+    h1 span { color: var(--amber); }
     .subtitle {
-      color: var(--text-muted);
-      font-size: 0.875rem;
+      font-style: italic;
+      color: var(--text-dim);
+      margin-top: 6px;
+      font-size: 15px;
     }
 
-    /* --- Tabs --- */
-    .tabs {
+    .tabs-container {
+      max-width: 980px;
+      margin: 0 auto 20px;
+      padding: 0 20px;
       display: flex;
-      gap: 0.5rem;
-      overflow-x: auto;
-      padding-bottom: 0.5rem;
-      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
     }
-
     .tab-btn {
       background: var(--surface);
       border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 0.5rem 1rem;
-      border-radius: var(--radius);
+      color: var(--text-dim);
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: .1em;
+      padding: 8px 16px;
       cursor: pointer;
-      font-size: 0.875rem;
-      font-weight: 500;
-      white-space: nowrap;
-      transition: all 0.2s;
+      border-radius: 4px;
+      transition: all .2s ease;
+      text-transform: uppercase;
     }
-
     .tab-btn:hover {
-      background: var(--surface-alt);
-      color: var(--text-main);
+      border-color: var(--gold-dim);
+      color: var(--text);
     }
-
     .tab-btn.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: white;
+      background: var(--gold-dim);
+      border-color: var(--gold);
+      color: #fff;
+      box-shadow: 0 0 10px rgba(201,150,58,0.2);
     }
 
-    /* --- Layout Grid --- */
-    .grid {
+    .wrapper {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
+
+    @media (max-width: 700px) {
+      .wrapper { grid-template-columns: 1fr; }
+      .results-section { grid-column: 1; }
+    }
+
+    .results-section { grid-column: 1 / -1; }
 
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem;
+      border-radius: 6px;
+      padding: 22px 22px 18px;
       box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
     }
-
-    .card-global {
-      background: var(--surface-alt);
-      border-style: dashed;
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
     }
 
     .card-title {
-      font-size: 0.75rem;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: .28em;
       text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      margin-bottom: 1.25rem;
+      color: var(--gold);
+      margin-bottom: 16px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 8px;
     }
-
-    .global-badge {
-      font-size: 0.65rem;
+    .card-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
       background: var(--border);
-      padding: 2px 6px;
-      border-radius: 4px;
     }
 
-    /* --- Forms --- */
+    .field-group { display: flex; flex-direction: column; gap: 10px; }
     .field {
-      margin-bottom: 1rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
     }
-
-    .field:last-child { margin-bottom: 0; }
-
     label {
+      font-size: 14px;
+      color: var(--text-dim);
+      font-style: italic;
+      line-height: 1.3;
+    }
+    label strong {
       display: block;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
+      color: var(--text);
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14.5px;
     }
 
     input[type="number"] {
-      width: 100%;
-      padding: 0.625rem;
-      border-radius: 6px;
+      width: 100px;
+      background: var(--input-bg);
       border: 1px solid var(--border);
-      background: var(--bg);
-      color: var(--text-main);
-      font-family: inherit;
-      font-size: 0.9375rem;
+      border-radius: 4px;
+      color: var(--gold-lt);
+      font-family: 'Crimson Pro', serif;
+      font-size: 15px;
       font-weight: 600;
+      padding: 6px 10px;
+      text-align: right;
+      transition: border-color .2s, box-shadow .2s;
       outline: none;
-      transition: border-color 0.2s;
+      -moz-appearance: textfield;
     }
-
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
     input[type="number"]:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(201,150,58,.15);
     }
 
-    /* --- Stats / Derived --- */
-    .derived-box {
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--border);
+    .divider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0 4px;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .2em;
+    }
+    .divider-row::before, .divider-row::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
     }
 
-    .stat-row {
+    .derived-row {
       display: flex;
       justify-content: space-between;
-      font-size: 0.8125rem;
-      margin-bottom: 0.25rem;
+      align-items: center;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(58,46,30,.5);
+      font-size: 14.5px;
+    }
+    .derived-row:last-child { border-bottom: none; }
+    .derived-label { color: var(--text-dim); font-style: italic; }
+    .derived-value { font-weight: 600; color: var(--gold-lt); font-size: 15px; }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
     }
 
-    .stat-label { color: var(--text-muted); }
-    .stat-value { font-weight: 600; }
-
-    /* --- Results Section --- */
-    .results-card {
-      grid-column: 1 / -1;
+    .rg-header {
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
     }
+    .rg-header:not(:last-child) { border-right: 1px solid var(--border); }
+    .rg-header.col-a { color: var(--text-muted); }
+    .rg-header.col-b { color: var(--gold); text-align: center; }
+    .rg-header.col-c { color: var(--amber); text-align: center; }
 
-    .profit-display {
+    .rg-row { display: contents; }
+    .rg-cell {
+      padding: 10px 16px;
+      border-bottom: 1px solid rgba(58,46,30,.4);
+      font-size: 14.5px;
+      background: var(--surface);
+      transition: background .15s;
+    }
+    .rg-row:last-child .rg-cell { border-bottom: none; }
+    .rg-row:hover .rg-cell { background: var(--surface2); }
+    .rg-cell:not(:last-child) { border-right: 1px solid rgba(58,46,30,.4); }
+    .rg-cell.label { color: var(--text-dim); font-style: italic; }
+    .rg-cell.val { font-weight: 600; text-align: right; }
+    .rg-cell.val-b { color: var(--gold-lt); }
+    .rg-cell.val-c { color: var(--amber); }
+
+    .profit-hero {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
+      gap: 12px;
+      margin-bottom: 16px;
     }
-
-    .profit-item {
-      padding: 1.25rem;
-      border-radius: var(--radius);
-      background: var(--surface-alt);
-      text-align: center;
+    .profit-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 18px 20px 14px;
+      position: relative;
+      overflow: hidden;
     }
-
-    .profit-label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-bottom: 0.5rem;
+    .profit-card::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 2px;
     }
+    .profit-card.col-b::before { background: linear-gradient(90deg, transparent, var(--gold-dim), transparent); }
+    .profit-card.col-c::before { background: linear-gradient(90deg, transparent, var(--amber), transparent); opacity: .5; }
 
-    .profit-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
-
-    .pos { color: var(--success); }
-    .neg { color: var(--danger); }
-
-    /* --- Data Table --- */
-    .table-container {
-      overflow-x: auto;
-      margin-top: 1rem;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.875rem;
-    }
-
-    th {
-      text-align: left;
-      padding: 0.75rem;
-      border-bottom: 2px solid var(--border);
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    td {
-      padding: 0.75rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .tr-group {
-      background: var(--surface-alt);
-      font-weight: 700;
-      font-size: 0.7rem;
+    .profit-card-name {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: .22em;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+    .profit-card.col-b .profit-card-name { color: var(--gold); }
+    .profit-card.col-c .profit-card-name { color: var(--amber); }
+
+    .profit-card-value {
+      font-size: 28px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: -.01em;
+    }
+    .profit-card-value .pct-hint { font-size: 16px; font-weight: 400; }
+    .profit-pos { color: var(--green); }
+    .profit-neg { color: var(--red); }
+
+    .details-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      padding: 10px 0 6px;
+      width: 100%;
+      transition: color .2s;
+    }
+    .details-toggle:hover { color: var(--gold); }
+    .details-toggle::before, .details-toggle::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .details-toggle .chevron {
+      display: inline-block;
+      transition: transform .25s;
+      font-style: normal;
+      font-size: 9px;
+    }
+    .details-toggle[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+
+    .details-panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows .28s ease;
+    }
+    .details-panel.open { grid-template-rows: 1fr; }
+    .details-inner { overflow: hidden; }
+    .details-inner-pad { padding-top: 10px; }
+
+    .rg-cell.sublabel {
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-style: italic;
+      background: var(--surface2);
     }
 
-    /* --- Footer Actions --- */
-    .footer-actions {
+    .actions {
+      grid-column: 1 / -1;
       display: flex;
       justify-content: flex-end;
-      gap: 1rem;
-      margin-top: 2rem;
+      margin-top: -8px;
     }
-
-    .btn-secondary {
-      background: transparent;
+    button.reset {
+      background: none;
       border: 1px solid var(--border);
       color: var(--text-muted);
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      padding: 7px 16px;
+      border-radius: 4px;
       cursor: pointer;
-      font-size: 0.75rem;
-      font-weight: 600;
+      transition: color .2s, border-color .2s;
     }
+    button.reset:hover { color: var(--gold); border-color: var(--gold-dim); }
 
-    .btn-secondary:hover {
-      background: var(--surface-alt);
-      color: var(--text-main);
-    }
-
-    /* Notification */
-    .toast {
+    .saved-badge {
       position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      background: var(--text-main);
-      color: var(--bg);
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 600;
+      bottom: 20px;
+      right: 20px;
+      background: var(--surface2);
+      border: 1px solid var(--gold-dim);
+      color: var(--gold);
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      padding: 8px 14px;
+      border-radius: 4px;
       opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.3s;
+      transform: translateY(6px);
+      transition: opacity .3s, transform .3s;
+      pointer-events: none;
     }
-    .toast.show { opacity: 1; transform: translateY(0); }
+    .saved-badge.show { opacity: 1; transform: translateY(0); }
 
-    @media (max-width: 640px) {
-      .profit-display { grid-template-columns: 1fr; }
-    }
+    .pct-hint { font-size: 12px; color: var(--text-muted); margin-left: 2px; }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <header>
-    <h1>Abidos <span>Calculator</span></h1>
-    <p class="subtitle">Streamlined Crafting Profit Analysis</p>
-  </header>
+<header>
+  <h1>Abidos <span>Calculator</span></h1>
+</header>
 
-  <nav class="tabs" id="tabs-nav"></nav>
+<nav class="tabs-container" id="tabs-nav"></nav>
 
-  <main class="grid">
-    <section class="card card-global">
-      <div class="card-title">Bonuses <span class="global-badge">Global</span></div>
+<div class="wrapper">
+
+  <div class="card">
+    <p class="card-title">Cost Reductions (Global)</p>
+    <div class="field-group">
       <div class="field">
-        <label>[Special] Cost Reduction %</label>
-        <input type="number" id="b1" step="0.1">
+        <label><strong>[Special] Cost Reduction</strong></label>
+        <input type="number" id="b1" step="0.1" min="0" max="100" />
       </div>
       <div class="field">
-        <label>Base Cost Reduction %</label>
-        <input type="number" id="b2" step="0.1">
+        <label><strong>Cost Reduction</strong></label>
+        <input type="number" id="b2" step="0.1" min="0" max="100" />
       </div>
-      <div class="derived-box">
-        <div class="stat-row">
-          <span class="stat-label">Total Reduction</span>
-          <span class="stat-value" id="d-b3">—</span>
+    </div>
+    <div class="divider-row">Derived</div>
+    <div class="derived-row">
+      <span class="derived-label">Total Cost Reduction</span>
+      <span class="derived-value" id="d-b3">—</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Great Success (Global)</p>
+    <div class="field-group">
+      <div class="field">
+        <label><strong>[Special] Great Success Chance</strong></label>
+        <input type="number" id="b5" step="0.1" min="0" max="100" />
+      </div>
+      <div class="field">
+        <label><strong>Crafting Great Success Chance</strong></label>
+        <input type="number" id="b6" step="0.1" min="0" max="100" />
+      </div>
+    </div>
+    <div class="divider-row">Derived</div>
+    <div class="derived-row">
+      <span class="derived-label">Effective GS Chance</span>
+      <span class="derived-value" id="d-b8">—</span>
+    </div>
+    <div class="derived-row">
+      <span class="derived-label">Avg Output per Craft</span>
+      <span class="derived-value" id="d-b24">—</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Auction House — Material Prices</p>
+    <div class="field-group">
+      <div class="field">
+        <label><strong id="lbl-mat-1">Normal Material</strong></label>
+        <input type="number" id="e19" step="1" min="1" />
+      </div>
+      <div class="field">
+        <label><strong id="lbl-mat-2">Uncommon Material</strong></label>
+        <input type="number" id="e20" step="1" min="1" />
+      </div>
+      <div class="field">
+        <label><strong id="lbl-mat-3">Rare Material</strong></label>
+        <input type="number" id="e21" step="1" min="1" />
+      </div>
+    </div>
+    <div class="divider-row">Gold Prices per Unit</div>
+    <div class="derived-row">
+      <span class="derived-label" id="der-mat-1">Normal</span>
+      <span class="derived-value" id="d-p19">—</span>
+    </div>
+    <div class="derived-row">
+      <span class="derived-label" id="der-mat-2">Uncommon</span>
+      <span class="derived-value" id="d-p20">—</span>
+    </div>
+    <div class="derived-row">
+      <span class="derived-label" id="der-mat-3">Rare</span>
+      <span class="derived-value" id="d-p21">—</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="card-title">Abidos Sale Price (Global)</p>
+    <div class="field-group">
+      <div class="field">
+        <label><strong>Abidos Fusion Material</strong></label>
+        <input type="number" id="b26" step="1" min="1" />
+      </div>
+      <div class="field">
+        <label><strong>Superior Abidos Fusion Material</strong></label>
+        <input type="number" id="c26" step="1" min="1" />
+      </div>
+    </div>
+    <div class="divider-row">Derived</div>
+    <div class="derived-row">
+      <span class="derived-label">Fee — Abidos Fusion (5%)</span>
+      <span class="derived-value" id="d-b27">—</span>
+    </div>
+    <div class="derived-row">
+      <span class="derived-label">Fee — Superior Abidos Fusion (5%)</span>
+      <span class="derived-value" id="d-c27">—</span>
+    </div>
+  </div>
+
+  <div class="card results-section">
+    <p class="card-title">Results — Per Batch</p>
+
+    <div class="profit-hero">
+      <div class="profit-card col-b">
+        <p class="profit-card-name">⚗ Abidos Fusion</p>
+        <div class="profit-card-value" id="r-b28">—</div>
+      </div>
+      <div class="profit-card col-c">
+        <p class="profit-card-name">⚗ Superior Abidos Fusion</p>
+        <div class="profit-card-value" id="r-c28">—</div>
+      </div>
+    </div>
+
+    <button class="details-toggle" aria-expanded="false" onclick="toggleDetails(this)">
+      <i class="chevron">▼</i> Show breakdown <i class="chevron">▼</i>
+    </button>
+
+    <div class="details-panel" id="details-panel">
+      <div class="details-inner">
+        <div class="details-inner-pad">
+          <div class="results-grid">
+            <div class="rg-header col-a">Metric</div>
+            <div class="rg-header col-b">Abidos Fusion</div>
+            <div class="rg-header col-c">Superior Abidos Fusion</div>
+
+            <div class="rg-row">
+              <div class="rg-cell sublabel">Gold Cost</div>
+              <div class="rg-cell sublabel"></div>
+              <div class="rg-cell sublabel"></div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label">Base Gold Cost</div>
+              <div class="rg-cell val val-b">400 g</div>
+              <div class="rg-cell val val-c">520 g</div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label">Net Gold Cost (after reduction)</div>
+              <div class="rg-cell val val-b" id="r-b11">—</div>
+              <div class="rg-cell val val-c" id="r-c11">—</div>
+            </div>
+
+            <div class="rg-row">
+              <div class="rg-cell sublabel">Material Quantities</div>
+              <div class="rg-cell sublabel"></div>
+              <div class="rg-cell sublabel"></div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label" id="br-mat-1">Normal Material</div>
+              <div class="rg-cell val val-b">86</div>
+              <div class="rg-cell val val-c">112</div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label" id="br-mat-2">Uncommon Material</div>
+              <div class="rg-cell val val-b">45</div>
+              <div class="rg-cell val val-c">59</div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label" id="br-mat-3">Rare Material</div>
+              <div class="rg-cell val val-b">33</div>
+              <div class="rg-cell val val-c">43</div>
+            </div>
+
+            <div class="rg-row">
+              <div class="rg-cell sublabel">Batch Economics</div>
+              <div class="rg-cell sublabel"></div>
+              <div class="rg-cell sublabel"></div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label">Total Cost per Batch</div>
+              <div class="rg-cell val val-b" id="r-b23">—</div>
+              <div class="rg-cell val val-c" id="r-c23">—</div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label">Avg Output per Craft</div>
+              <div class="rg-cell val val-b" id="r-b24b">—</div>
+              <div class="rg-cell val val-c" id="r-c24">—</div>
+            </div>
+
+            <div class="rg-row">
+              <div class="rg-cell sublabel">Sale</div>
+              <div class="rg-cell sublabel"></div>
+              <div class="rg-cell sublabel"></div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label">Sale Price / Output</div>
+              <div class="rg-cell val val-b" id="r-b26">—</div>
+              <div class="rg-cell val val-c" id="r-c26">—</div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label">AH Fee / Sale (5%)</div>
+              <div class="rg-cell val val-b" id="r-b27">—</div>
+              <div class="rg-cell val val-c" id="r-c27">—</div>
+            </div>
+            <div class="rg-row">
+              <div class="rg-cell label">Net per Output</div>
+              <div class="rg-cell val val-b" id="r-bnet">—</div>
+              <div class="rg-cell val val-c" id="r-cnet">—</div>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
 
-    <section class="card card-global">
-      <div class="card-title">Success Rates <span class="global-badge">Global</span></div>
-      <div class="field">
-        <label>[Special] Great Success %</label>
-        <input type="number" id="b5" step="0.1">
-      </div>
-      <div class="field">
-        <label>Crafting Great Success %</label>
-        <input type="number" id="b6" step="0.1">
-      </div>
-      <div class="derived-box">
-        <div class="stat-row">
-          <span class="stat-label">Effective GS Rate</span>
-          <span class="stat-value" id="d-b8">—</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Avg Output per Batch</span>
-          <span class="stat-value" id="d-b24">—</span>
-        </div>
-      </div>
-    </section>
+  <div class="actions">
+    <button class="reset" onclick="resetAll()">↺ Reset All Data</button>
+  </div>
 
-    <section class="card card-global">
-      <div class="card-title">Market Sale Price <span class="global-badge">Global</span></div>
-      <div class="field">
-        <label>Abidos Fusion (Unit)</label>
-        <input type="number" id="b26">
-      </div>
-      <div class="field">
-        <label>Superior Abidos (Unit)</label>
-        <input type="number" id="c26">
-      </div>
-      <div class="derived-box">
-        <div class="stat-row">
-          <span class="stat-label">Market Fee (5%)</span>
-          <span class="stat-value" id="d-fees">—</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="card">
-      <div class="card-title">Material Costs <span id="current-tab-name" style="text-transform:none; color:var(--primary)"></span></div>
-      <div class="field">
-        <label id="lbl-mat-1">Normal</label>
-        <input type="number" id="e19">
-      </div>
-      <div class="field">
-        <label id="lbl-mat-2">Uncommon</label>
-        <input type="number" id="e20">
-      </div>
-      <div class="field">
-        <label id="lbl-mat-3">Rare</label>
-        <input type="number" id="e21">
-      </div>
-    </section>
-
-    <section class="card results-card">
-      <div class="card-title">Economic Summary</div>
-      
-      <div class="profit-display">
-        <div class="profit-item">
-          <div class="profit-label">Abidos Fusion Profit</div>
-          <div class="profit-value" id="r-b28">—</div>
-        </div>
-        <div class="profit-item">
-          <div class="profit-label">Superior Abidos Profit</div>
-          <div class="profit-value" id="r-c28">—</div>
-        </div>
-      </div>
-
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Batch Breakdown</th>
-              <th style="text-align:right">Abidos</th>
-              <th style="text-align:right">Superior</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="tr-group"><td colspan="3">Fixed Costs</td></tr>
-            <tr>
-              <td>Net Gold Fee</td>
-              <td style="text-align:right" id="r-b11">—</td>
-              <td style="text-align:right" id="r-c11">—</td>
-            </tr>
-            <tr class="tr-group"><td colspan="3">Material Costs (Total for Batch)</td></tr>
-            <tr>
-              <td>Total Batch Cost</td>
-              <td style="text-align:right; font-weight:600" id="r-b23">—</td>
-              <td style="text-align:right; font-weight:600" id="r-c23">—</td>
-            </tr>
-            <tr class="tr-group"><td colspan="3">Revenue per Unit</td></tr>
-            <tr>
-              <td>Net Market Revenue</td>
-              <td style="text-align:right" id="r-bnet">—</td>
-              <td style="text-align:right" id="r-cnet">—</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer-actions">
-    <button class="btn-secondary" onclick="resetAll()">Reset All Data</button>
-  </footer>
 </div>
 
-<div class="toast" id="toast">Data saved</div>
+<div class="saved-badge" id="saved-badge">Saved ✓</div>
 
 <script>
   const PROFESSIONS = [
@@ -461,16 +622,23 @@
   const GLOBAL_IDS = ['b1', 'b2', 'b5', 'b6', 'b26', 'c26'];
   const PER_TAB_IDS = ['e19', 'e20', 'e21'];
 
-  const DEFAULTS_GLOBAL = { b1: 10, b2: 7, b5: 9, b6: 5, b26: 213, c26: 255 };
-  const DEFAULTS_TAB = { e19: 200, e20: 400, e21: 2500 };
+  const DEFAULTS_GLOBAL = {
+    b1: 10, b2: 7, b5: 9, b6: 5, b26: 213, c26: 255
+  };
+  const DEFAULTS_TAB = {
+    e19: 200, e20: 400, e21: 2500
+  };
 
-  const LS_KEY = 'abidos_calc_clean_v1';
+  const LS_KEY = 'abidos_calc_vfinal';
   let currentTab = 'logging';
-  let store = { global: { ...DEFAULTS_GLOBAL }, tabs: {} };
+  let store = {
+    global: { ...DEFAULTS_GLOBAL },
+    tabs: {}
+  };
 
   const R = {
-    b: { baseGold: 400, m1: 86, m2: 45, m3: 33 },
-    c: { baseGold: 520, m1: 112, m2: 59, m3: 43 }
+    b: { baseGold: 400, timber: 86, tender: 45, abidos: 33 },
+    c: { baseGold: 520, timber: 112, tender: 59, abidos: 43 }
   };
 
   function init() {
@@ -503,17 +671,27 @@
         currentTab = saved.activeTab || 'logging';
       }
     } catch(e) {}
-    PROFESSIONS.forEach(p => { if (!store.tabs[p.id]) store.tabs[p.id] = { ...DEFAULTS_TAB }; });
+    
+    PROFESSIONS.forEach(p => {
+      if (!store.tabs[p.id]) store.tabs[p.id] = { ...DEFAULTS_TAB };
+    });
   }
 
   function saveStore() {
-    localStorage.setItem(LS_KEY, JSON.stringify({ activeTab: currentTab, global: store.global, tabs: store.tabs }));
+    const dataToSave = {
+      activeTab: currentTab,
+      global: store.global,
+      tabs: store.tabs
+    };
+    try { localStorage.setItem(LS_KEY, JSON.stringify(dataToSave)); } catch(e) {}
   }
 
   function switchTab(id) {
     currentTab = id;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(`btn-${id}`).classList.add('active');
+    const activeBtn = document.getElementById(`btn-${id}`);
+    if(activeBtn) activeBtn.classList.add('active');
+    
     updateLabels();
     fillInputs();
     recalc();
@@ -522,29 +700,42 @@
 
   function updateLabels() {
     const p = PROFESSIONS.find(x => x.id === currentTab);
-    document.getElementById('current-tab-name').textContent = `(${p.name})`;
     document.getElementById('lbl-mat-1').textContent = p.mats[0];
     document.getElementById('lbl-mat-2').textContent = p.mats[1];
     document.getElementById('lbl-mat-3').textContent = p.mats[2];
+    document.getElementById('der-mat-1').textContent = p.mats[0];
+    document.getElementById('der-mat-2').textContent = p.mats[1];
+    document.getElementById('der-mat-3').textContent = p.mats[2];
+    document.getElementById('br-mat-1').textContent = p.mats[0];
+    document.getElementById('br-mat-2').textContent = p.mats[1];
+    document.getElementById('br-mat-3').textContent = p.mats[2];
   }
 
   function fillInputs() {
-    GLOBAL_IDS.forEach(id => document.getElementById(id).value = store.global[id]);
-    PER_TAB_IDS.forEach(id => document.getElementById(id).value = store.tabs[currentTab][id]);
+    GLOBAL_IDS.forEach(id => {
+      document.getElementById(id).value = store.global[id];
+    });
+    PER_TAB_IDS.forEach(id => {
+      document.getElementById(id).value = store.tabs[currentTab][id];
+    });
   }
 
   function onInput(e) {
     const id = e.target.id;
     const val = parseFloat(e.target.value) || 0;
-    if (GLOBAL_IDS.includes(id)) store.global[id] = val;
-    else store.tabs[currentTab][id] = val;
+
+    if (GLOBAL_IDS.includes(id)) {
+      store.global[id] = val;
+    } else {
+      store.tabs[currentTab][id] = val;
+    }
+
     recalc();
     saveStore();
-    showToast();
+    flashSaved();
   }
 
   function resetAll() {
-    if(!confirm("Reset all data to defaults?")) return;
     store.global = { ...DEFAULTS_GLOBAL };
     PROFESSIONS.forEach(p => store.tabs[p.id] = { ...DEFAULTS_TAB });
     fillInputs();
@@ -553,57 +744,84 @@
   }
 
   function g(id) { return parseFloat(document.getElementById(id).value) || 0; }
-  function set(id, val) { const el = document.getElementById(id); if(el) el.innerHTML = val; }
+  function set(id, html) { const el = document.getElementById(id); if(el) el.innerHTML = html; }
+  function fmtGold(v, decimals=2) { return v.toFixed(decimals) + ' <span class="pct-hint">g</span>'; }
+  function fmtPct(v) { return (v * 100).toFixed(2) + ' <span class="pct-hint">%</span>'; }
+  function fmtNum(v, d=3) { return v.toFixed(d); }
 
   function recalc() {
-    const b1 = g('b1')/100, b2 = g('b2')/100, b5 = g('b5')/100, b6 = g('b6')/100;
-    const e19 = g('e19'), e20 = g('e20'), e21 = g('e21'), b26 = g('b26'), c26 = g('c26');
+    const b1 = g('b1')/100, b2 = g('b2')/100;
+    const b5 = g('b5')/100, b6 = g('b6')/100;
+    const e19 = g('e19'), e20 = g('e20'), e21 = g('e21');
+    const b26 = g('b26'), c26 = g('c26');
 
     const b3 = b1 + b2;
-    set('d-b3', (b3*100).toFixed(1) + '%');
+    set('d-b3', fmtPct(b3));
 
     const b8 = b6 * (1 + b5);
-    set('d-b8', (b8*100).toFixed(2) + '%');
+    set('d-b8', fmtPct(b8));
 
     const b24 = 10 * (1 - b8) + 20 * b8;
-    set('d-b24', b24.toFixed(2));
+    set('d-b24', fmtNum(b24, 4));
 
-    const p19 = e19/100, p20 = e20/100, p21 = e21/100;
+    const p19 = e19 / 100, p20 = e20 / 100, p21 = e21 / 100;
+    set('d-p19', fmtGold(p19));
+    set('d-p20', fmtGold(p20));
+    set('d-p21', fmtGold(p21));
 
     const b11 = R.b.baseGold * (1 - b3);
     const c11 = Math.floor(R.c.baseGold * (1 - b3));
-    set('r-b11', b11.toFixed(1) + 'g');
-    set('r-c11', c11 + 'g');
+    set('r-b11', fmtGold(b11, 2));
+    set('r-c11', fmtGold(c11, 0));
 
-    const b23 = b11 + (R.b.m1 * p19) + (R.b.m2 * p20) + (R.b.m3 * p21);
-    const c23 = c11 + (R.c.m1 * p19) + (R.c.m2 * p20) + (R.c.m3 * p21);
-    set('r-b23', b23.toFixed(1) + 'g');
-    set('r-c23', c23.toFixed(1) + 'g');
+    const b23 = (R.b.baseGold * (1 - b3)) + (R.b.timber * p19) + (R.b.tender * p20) + (R.b.abidos * p21);
+    const c23 = (R.c.baseGold * (1 - b3)) + (R.c.timber * p19) + (R.c.tender * p20) + (R.c.abidos * p21);
+    set('r-b23', fmtGold(b23));
+    set('r-c23', fmtGold(c23));
 
-    const b27 = Math.ceil(b26 * 0.05), c27 = Math.ceil(c26 * 0.05);
-    set('d-fees', `-${b27}g / -${c27}g`);
+    set('r-b24b', fmtNum(b24, 4));
+    set('r-c24', fmtNum(b24, 4));
+    set('r-b26', fmtGold(b26, 0));
+    set('r-c26', fmtGold(c26, 0));
 
-    const bNet = b26 - b27, cNet = c26 - c27;
-    set('r-bnet', bNet + 'g');
-    set('r-cnet', cNet + 'g');
+    const b27 = Math.ceil(b26 * 0.05);
+    const c27 = Math.ceil(c26 * 0.05);
+    set('d-b27', fmtGold(b27, 0));
+    set('d-c27', fmtGold(c27, 0));
+    set('r-b27', fmtGold(b27, 0));
+    set('r-c27', fmtGold(c27, 0));
 
-    const b28 = (b24 * bNet) - b23, c28 = (b24 * cNet) - c23;
+    set('r-bnet', fmtGold(b26 - b27, 0));
+    set('r-cnet', fmtGold(c26 - c27, 0));
 
-    const showProfit = (val, id) => {
-      const el = document.getElementById(id);
-      el.textContent = (val >= 0 ? '+' : '') + val.toFixed(1) + 'g';
-      el.className = 'profit-value ' + (val >= 0 ? 'pos' : 'neg');
+    const b28 = b24 * (b26 - b27) - b23;
+    const c28 = b24 * (c26 - c27) - c23;
+
+    const profitHero = (v, id) => {
+      const cls = v >= 0 ? 'profit-pos' : 'profit-neg';
+      const sign = v >= 0 ? '+' : '';
+      set(id, `<span class="${cls}">${sign}${fmtGold(v)}</span>`);
     };
-    showProfit(b28, 'r-b28');
-    showProfit(c28, 'r-c28');
+    profitHero(b28, 'r-b28');
+    profitHero(c28, 'r-c28');
   }
 
-  let toastT;
-  function showToast() {
-    clearTimeout(toastT);
-    const t = document.getElementById('toast');
-    t.classList.add('show');
-    toastT = setTimeout(() => t.classList.remove('show'), 1500);
+  function toggleDetails(btn) {
+    const panel = document.getElementById('details-panel');
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', !open);
+    panel.classList.toggle('open', !open);
+    const chevrons = btn.querySelectorAll('.chevron');
+    chevrons.forEach(c => c.style.transform = !open ? 'rotate(180deg)' : '');
+    btn.childNodes[1].textContent = !open ? ' Hide breakdown ' : ' Show breakdown ';
+  }
+
+  let saveTimer;
+  function flashSaved() {
+    clearTimeout(saveTimer);
+    const b = document.getElementById('saved-badge');
+    b.classList.add('show');
+    saveTimer = setTimeout(() => b.classList.remove('show'), 1000);
   }
 
   init();
