@@ -37,7 +37,6 @@
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='none'/%3E%3Cpath d='M0 0h60v60H0z' fill='url(%23g)'/%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0' stop-color='%23201800' stop-opacity='.4'/%3E%3Cstop offset='1' stop-color='%23000' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3C/svg%3E");
     }
 
-    /* ── Header ── */
     header {
       text-align: center;
       padding: 40px 24px 20px;
@@ -68,7 +67,6 @@
       font-size: 15px;
     }
 
-    /* ── Tabs ── */
     .tabs-container {
       max-width: 980px;
       margin: 0 auto 20px;
@@ -102,7 +100,6 @@
       box-shadow: 0 0 10px rgba(201,150,58,0.2);
     }
 
-    /* ── Layout ── */
     .wrapper {
       max-width: 980px;
       margin: 0 auto;
@@ -117,11 +114,8 @@
       .results-section { grid-column: 1; }
     }
 
-    .results-section {
-      grid-column: 1 / -1;
-    }
+    .results-section { grid-column: 1 / -1; }
 
-    /* ── Cards ── */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -157,7 +151,6 @@
       background: var(--border);
     }
 
-    /* ── Form rows ── */
     .field-group { display: flex; flex-direction: column; gap: 10px; }
     .field {
       display: grid;
@@ -201,7 +194,6 @@
       box-shadow: 0 0 0 2px rgba(201,150,58,.15);
     }
 
-    /* ── Divider row ── */
     .divider-row {
       display: flex;
       align-items: center;
@@ -216,7 +208,6 @@
       content: ''; flex: 1; height: 1px; background: var(--border);
     }
 
-    /* ── Derived row ── */
     .derived-row {
       display: flex;
       justify-content: space-between;
@@ -229,7 +220,6 @@
     .derived-label { color: var(--text-dim); font-style: italic; }
     .derived-value { font-weight: 600; color: var(--gold-lt); font-size: 15px; }
 
-    /* ── Results table ── */
     .results-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -269,7 +259,6 @@
     .rg-cell.val-b { color: var(--gold-lt); }
     .rg-cell.val-c { color: var(--amber); }
 
-    /* ── Profit hero ── */
     .profit-hero {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -313,7 +302,6 @@
     .profit-pos { color: var(--green); }
     .profit-neg { color: var(--red); }
 
-    /* ── Details toggle ── */
     .details-toggle {
       display: flex;
       align-items: center;
@@ -351,7 +339,6 @@
     .details-inner { overflow: hidden; }
     .details-inner-pad { padding-top: 10px; }
 
-    /* ── Details sub-label ── */
     .rg-cell.sublabel {
       color: var(--text-muted);
       font-size: 12.5px;
@@ -359,7 +346,6 @@
       background: var(--surface2);
     }
 
-    /* ── Reset button ── */
     .actions {
       grid-column: 1 / -1;
       display: flex;
@@ -381,7 +367,6 @@
     }
     button.reset:hover { color: var(--gold); border-color: var(--gold-dim); }
 
-    /* ── Saved indicator ── */
     .saved-badge {
       position: fixed;
       bottom: 20px;
@@ -413,13 +398,12 @@
   <p class="subtitle">Unified Profit Estimation</p>
 </header>
 
-<nav class="tabs-container" id="tabs-nav">
-  </nav>
+<nav class="tabs-container" id="tabs-nav"></nav>
 
 <div class="wrapper">
 
   <div class="card">
-    <p class="card-title">Cost Reductions</p>
+    <p class="card-title">Cost Reductions (Global)</p>
     <div class="field-group">
       <div class="field">
         <label><strong>[Special] Cost Reduction</strong></label>
@@ -438,7 +422,7 @@
   </div>
 
   <div class="card">
-    <p class="card-title">Great Success</p>
+    <p class="card-title">Great Success (Global)</p>
     <div class="field-group">
       <div class="field">
         <label><strong>[Special] Great Success Chance</strong></label>
@@ -492,7 +476,7 @@
   </div>
 
   <div class="card">
-    <p class="card-title">Abidos Sale Price</p>
+    <p class="card-title">Abidos Sale Price (Global)</p>
     <div class="field-group">
       <div class="field">
         <label><strong>Abidos Fusion Material</strong></label>
@@ -551,6 +535,7 @@
               <div class="rg-cell val val-c">520 g</div>
             </div>
             <div class="rg-row">
+              <div class="rg-cell label">Net Gold Cost (after reduction)</div>
               <div class="rg-cell val val-b" id="r-b11">—</div>
               <div class="rg-cell val val-c" id="r-c11">—</div>
             </div>
@@ -619,7 +604,7 @@
   </div>
 
   <div class="actions">
-    <button class="reset" onclick="resetTab()">↺ Reset Tab Defaults</button>
+    <button class="reset" onclick="resetAll()">↺ Reset All Data</button>
   </div>
 
 </div>
@@ -636,21 +621,26 @@
     { id: 'fishing', name: 'Fishing', mats: ['Fish', 'Redflesh Fish', 'Abidos Solar Carp'] }
   ];
 
-  const DEFAULTS = {
-    b1: 10, b2: 7,
-    b5: 9, b6: 5,
-    e19: 200, e20: 400, e21: 2500,
-    b26: 213, c26: 255
+  const GLOBAL_IDS = ['b1', 'b2', 'b5', 'b6', 'b26', 'c26'];
+  const PER_TAB_IDS = ['e19', 'e20', 'e21'];
+
+  const DEFAULTS_GLOBAL = {
+    b1: 10, b2: 7, b5: 9, b6: 5, b26: 213, c26: 255
+  };
+  const DEFAULTS_TAB = {
+    e19: 200, e20: 400, e21: 2500
   };
 
-  const INPUT_IDS = Object.keys(DEFAULTS);
-  const LS_KEY = 'abidos_calc_v3';
+  const LS_KEY = 'abidos_calc_vfinal';
   let currentTab = 'logging';
-  let store = {};
+  let store = {
+    global: { ...DEFAULTS_GLOBAL },
+    tabs: {}
+  };
 
   const R = {
-    b: { baseGold: 400, baseCost: 400, timber: 86, tender: 45, abidos: 33 },
-    c: { baseGold: 520, baseCost: 529, timber: 112, tender: 59, abidos: 43 }
+    b: { baseGold: 400, timber: 86, tender: 45, abidos: 33 },
+    c: { baseGold: 520, timber: 112, tender: 59, abidos: 43 }
   };
 
   function init() {
@@ -668,26 +658,32 @@
     updateLabels();
     fillInputs();
     recalc();
+
+    [...GLOBAL_IDS, ...PER_TAB_IDS].forEach(id => {
+      document.getElementById(id).addEventListener('input', onInput);
+    });
   }
 
   function loadStore() {
     try {
       const saved = JSON.parse(localStorage.getItem(LS_KEY));
       if (saved) {
-        store = saved.data || {};
+        store.global = saved.global || { ...DEFAULTS_GLOBAL };
+        store.tabs = saved.tabs || {};
         currentTab = saved.activeTab || 'logging';
       }
     } catch(e) {}
     
     PROFESSIONS.forEach(p => {
-      if (!store[p.id]) store[p.id] = { ...DEFAULTS };
+      if (!store.tabs[p.id]) store.tabs[p.id] = { ...DEFAULTS_TAB };
     });
   }
 
   function saveStore() {
     const dataToSave = {
       activeTab: currentTab,
-      data: store
+      global: store.global,
+      tabs: store.tabs
     };
     try { localStorage.setItem(LS_KEY, JSON.stringify(dataToSave)); } catch(e) {}
   }
@@ -706,39 +702,44 @@
 
   function updateLabels() {
     const p = PROFESSIONS.find(x => x.id === currentTab);
-    
     document.getElementById('lbl-mat-1').textContent = p.mats[0];
     document.getElementById('lbl-mat-2').textContent = p.mats[1];
     document.getElementById('lbl-mat-3').textContent = p.mats[2];
-    
     document.getElementById('der-mat-1').textContent = p.mats[0];
     document.getElementById('der-mat-2').textContent = p.mats[1];
     document.getElementById('der-mat-3').textContent = p.mats[2];
-
     document.getElementById('br-mat-1').textContent = p.mats[0];
     document.getElementById('br-mat-2').textContent = p.mats[1];
     document.getElementById('br-mat-3').textContent = p.mats[2];
   }
 
   function fillInputs() {
-    const data = store[currentTab];
-    INPUT_IDS.forEach(id => {
-      document.getElementById(id).value = data[id];
+    GLOBAL_IDS.forEach(id => {
+      document.getElementById(id).value = store.global[id];
+    });
+    PER_TAB_IDS.forEach(id => {
+      document.getElementById(id).value = store.tabs[currentTab][id];
     });
   }
 
-  function onInput() {
-    const data = store[currentTab];
-    INPUT_IDS.forEach(id => {
-      data[id] = parseFloat(document.getElementById(id).value) || 0;
-    });
+  function onInput(e) {
+    const id = e.target.id;
+    const val = parseFloat(e.target.value) || 0;
+
+    if (GLOBAL_IDS.includes(id)) {
+      store.global[id] = val;
+    } else {
+      store.tabs[currentTab][id] = val;
+    }
+
     recalc();
     saveStore();
     flashSaved();
   }
 
-  function resetTab() {
-    store[currentTab] = { ...DEFAULTS };
+  function resetAll() {
+    store.global = { ...DEFAULTS_GLOBAL };
+    PROFESSIONS.forEach(p => store.tabs[p.id] = { ...DEFAULTS_TAB });
     fillInputs();
     recalc();
     saveStore();
@@ -772,17 +773,16 @@
 
     const b11 = R.b.baseGold * (1 - b3);
     const c11 = Math.floor(R.c.baseGold * (1 - b3));
-    set('r-b11', `Net Gold Cost (after reduction): ${fmtGold(b11, 2)}`);
-    set('r-c11', `Net Gold Cost (after reduction): ${fmtGold(c11, 0)}`);
+    set('r-b11', fmtGold(b11, 2));
+    set('r-c11', fmtGold(c11, 0));
 
-    const b23 = (R.b.baseCost * (1 - b3)) + (R.b.timber * p19) + (R.b.tender * p20) + (R.b.abidos * p21);
-    const c23 = (R.c.baseCost * (1 - b3)) + (R.c.timber * p19) + (R.c.tender * p20) + (R.c.abidos * p21);
+    const b23 = (R.b.baseGold * (1 - b3)) + (R.b.timber * p19) + (R.b.tender * p20) + (R.b.abidos * p21);
+    const c23 = (R.c.baseGold * (1 - b3)) + (R.c.timber * p19) + (R.c.tender * p20) + (R.c.abidos * p21);
     set('r-b23', fmtGold(b23));
     set('r-c23', fmtGold(c23));
 
     set('r-b24b', fmtNum(b24, 4));
     set('r-c24', fmtNum(b24, 4));
-
     set('r-b26', fmtGold(b26, 0));
     set('r-c26', fmtGold(c26, 0));
 
@@ -815,8 +815,7 @@
     panel.classList.toggle('open', !open);
     const chevrons = btn.querySelectorAll('.chevron');
     chevrons.forEach(c => c.style.transform = !open ? 'rotate(180deg)' : '');
-    const label = !open ? 'Hide breakdown' : 'Show breakdown';
-    btn.childNodes[1].textContent = ` ${label} `;
+    btn.childNodes[1].textContent = !open ? ' Hide breakdown ' : ' Show breakdown ';
   }
 
   let saveTimer;
@@ -826,10 +825,6 @@
     b.classList.add('show');
     saveTimer = setTimeout(() => b.classList.remove('show'), 1000);
   }
-
-  INPUT_IDS.forEach(id => {
-    document.getElementById(id).addEventListener('input', onInput);
-  });
 
   init();
 </script>
