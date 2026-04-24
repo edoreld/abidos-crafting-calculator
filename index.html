@@ -40,16 +40,8 @@
     /* ── Header ── */
     header {
       text-align: center;
-      padding: 48px 24px 32px;
+      padding: 40px 24px 20px;
       position: relative;
-    }
-    header::after {
-      content: '';
-      display: block;
-      width: 280px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-      margin: 20px auto 0;
     }
     .logo-ornament {
       font-size: 11px;
@@ -74,6 +66,40 @@
       color: var(--text-dim);
       margin-top: 6px;
       font-size: 15px;
+    }
+
+    /* ── Tabs ── */
+    .tabs-container {
+      max-width: 980px;
+      margin: 0 auto 20px;
+      padding: 0 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+    .tab-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: .1em;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all .2s ease;
+      text-transform: uppercase;
+    }
+    .tab-btn:hover {
+      border-color: var(--gold-dim);
+      color: var(--text);
+    }
+    .tab-btn.active {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+      color: #fff;
+      box-shadow: 0 0 10px rgba(201,150,58,0.2);
     }
 
     /* ── Layout ── */
@@ -180,14 +206,6 @@
     input[type="number"]:focus {
       border-color: var(--gold);
       box-shadow: 0 0 0 2px rgba(201,150,58,.15);
-    }
-
-    .unit {
-      font-size: 11px;
-      color: var(--text-muted);
-      text-align: right;
-      margin-top: -6px;
-      font-style: italic;
     }
 
     /* ── Divider row ── */
@@ -391,7 +409,6 @@
     }
     .saved-badge.show { opacity: 1; transform: translateY(0); }
 
-    /* ── Tooltip pct ── */
     .pct-hint { font-size: 12px; color: var(--text-muted); margin-left: 2px; }
   </style>
 </head>
@@ -400,22 +417,24 @@
 <header>
   <p class="logo-ornament">Crafting Tool</p>
   <h1>Abidos <span>Calculator</span></h1>
-  <p class="subtitle">Profit estimation for Abidos crafting</p>
+  <p class="subtitle">Unified Profit Estimation</p>
 </header>
+
+<nav class="tabs-container" id="tabs-nav">
+  </nav>
 
 <div class="wrapper">
 
-  <!-- ── Cost Reductions ── -->
   <div class="card">
     <p class="card-title">Cost Reductions</p>
     <div class="field-group">
       <div class="field">
         <label><strong>[Special] Cost Reduction</strong></label>
-        <input type="number" id="b1" step="0.1" min="0" max="100" placeholder="e.g. 10" value="10" />
+        <input type="number" id="b1" step="0.1" min="0" max="100" />
       </div>
       <div class="field">
         <label><strong>Cost Reduction</strong></label>
-        <input type="number" id="b2" step="0.1" min="0" max="100" placeholder="e.g. 7" value="7" />
+        <input type="number" id="b2" step="0.1" min="0" max="100" />
       </div>
     </div>
     <div class="divider-row">Derived</div>
@@ -425,17 +444,16 @@
     </div>
   </div>
 
-  <!-- ── Great Success ── -->
   <div class="card">
     <p class="card-title">Great Success</p>
     <div class="field-group">
       <div class="field">
         <label><strong>[Special] Great Success Chance</strong></label>
-        <input type="number" id="b5" step="0.1" min="0" max="100" placeholder="e.g. 9" value="9" />
+        <input type="number" id="b5" step="0.1" min="0" max="100" />
       </div>
       <div class="field">
         <label><strong>Crafting Great Success Chance</strong></label>
-        <input type="number" id="b6" step="0.1" min="0" max="100" placeholder="e.g. 5" value="5" />
+        <input type="number" id="b6" step="0.1" min="0" max="100" />
       </div>
     </div>
     <div class="divider-row">Derived</div>
@@ -449,49 +467,47 @@
     </div>
   </div>
 
-  <!-- ── AH Prices ── -->
   <div class="card">
     <p class="card-title">Auction House — Material Prices</p>
     <div class="field-group">
       <div class="field">
-        <label><strong>Normal Material</strong><span class="label-sub">i.e.: Timber</span></label>
-        <input type="number" id="e19" step="1" min="1" value="203" />
+        <label><strong id="lbl-mat-1">Normal Material</strong><span class="label-sub" id="sub-mat-1">...</span></label>
+        <input type="number" id="e19" step="1" min="1" />
       </div>
       <div class="field">
-        <label><strong>Uncommon Material</strong><span class="label-sub">i.e.: Tender Timber</span></label>
-        <input type="number" id="e20" step="1" min="1" value="422" />
+        <label><strong id="lbl-mat-2">Uncommon Material</strong><span class="label-sub" id="sub-mat-2">...</span></label>
+        <input type="number" id="e20" step="1" min="1" />
       </div>
       <div class="field">
-        <label><strong>Rare Material</strong><span class="label-sub">i.e.: Abidos Timber</span></label>
-        <input type="number" id="e21" step="1" min="1" value="2599" />
+        <label><strong id="lbl-mat-3">Rare Material</strong><span class="label-sub" id="sub-mat-3">...</span></label>
+        <input type="number" id="e21" step="1" min="1" />
       </div>
     </div>
     <div class="divider-row">Gold Prices per Unit</div>
     <div class="derived-row">
-      <span class="derived-label">Normal Material</span>
+      <span class="derived-label" id="der-mat-1">Normal</span>
       <span class="derived-value" id="d-p19">—</span>
     </div>
     <div class="derived-row">
-      <span class="derived-label">Uncommon Material</span>
+      <span class="derived-label" id="der-mat-2">Uncommon</span>
       <span class="derived-value" id="d-p20">—</span>
     </div>
     <div class="derived-row">
-      <span class="derived-label">Rare Material</span>
+      <span class="derived-label" id="der-mat-3">Rare</span>
       <span class="derived-value" id="d-p21">—</span>
     </div>
   </div>
 
-  <!-- ── Abidos Sale Price ── -->
   <div class="card">
     <p class="card-title">Abidos Sale Price</p>
     <div class="field-group">
       <div class="field">
         <label><strong>Abidos Fusion Material</strong></label>
-        <input type="number" id="b26" step="1" min="1" value="213" />
+        <input type="number" id="b26" step="1" min="1" />
       </div>
       <div class="field">
         <label><strong>Superior Abidos Fusion Material</strong></label>
-        <input type="number" id="c26" step="1" min="1" value="255" />
+        <input type="number" id="c26" step="1" min="1" />
       </div>
     </div>
     <div class="divider-row">Derived</div>
@@ -505,11 +521,9 @@
     </div>
   </div>
 
-  <!-- ── Results ── -->
   <div class="card results-section">
     <p class="card-title">Results — Per Batch</p>
 
-    <!-- Profit hero -->
     <div class="profit-hero">
       <div class="profit-card col-b">
         <p class="profit-card-name">⚗ Abidos Fusion</p>
@@ -521,12 +535,10 @@
       </div>
     </div>
 
-    <!-- Toggle -->
     <button class="details-toggle" aria-expanded="false" onclick="toggleDetails(this)">
       <i class="chevron">▼</i> Show breakdown <i class="chevron">▼</i>
     </button>
 
-    <!-- Collapsible details -->
     <div class="details-panel" id="details-panel">
       <div class="details-inner">
         <div class="details-inner-pad">
@@ -557,17 +569,17 @@
               <div class="rg-cell sublabel"></div>
             </div>
             <div class="rg-row">
-              <div class="rg-cell label">Normal Material <span style="color:var(--text-muted);font-size:12px">(i.e.: Timber)</span></div>
+              <div class="rg-cell label" id="br-mat-1">Normal Material</div>
               <div class="rg-cell val val-b">86</div>
               <div class="rg-cell val val-c">112</div>
             </div>
             <div class="rg-row">
-              <div class="rg-cell label">Uncommon Material <span style="color:var(--text-muted);font-size:12px">(i.e.: Tender Timber)</span></div>
+              <div class="rg-cell label" id="br-mat-2">Uncommon Material</div>
               <div class="rg-cell val val-b">45</div>
               <div class="rg-cell val val-c">59</div>
             </div>
             <div class="rg-row">
-              <div class="rg-cell label">Rare Material <span style="color:var(--text-muted);font-size:12px">(i.e.: Abidos Timber)</span></div>
+              <div class="rg-cell label" id="br-mat-3">Rare Material</div>
               <div class="rg-cell val val-b">33</div>
               <div class="rg-cell val val-c">43</div>
             </div>
@@ -615,7 +627,7 @@
   </div>
 
   <div class="actions">
-    <button class="reset" onclick="resetDefaults()">↺ Reset to defaults</button>
+    <button class="reset" onclick="resetTab()">↺ Reset Tab Defaults</button>
   </div>
 
 </div>
@@ -623,71 +635,135 @@
 <div class="saved-badge" id="saved-badge">Saved ✓</div>
 
 <script>
+  const PROFESSIONS = [
+    { id: 'logging', name: 'Logging', mats: ['Timber', 'Tender Timber', 'Abidos Timber'] },
+    { id: 'excavating', name: 'Excavating', mats: ['Ancient Relic', 'Rare Relic', 'Abidos Relic'] },
+    { id: 'hunting', name: 'Hunting', mats: ['Thick Raw Meat', 'Treated Meat', 'Abidos Thick Raw Meat'] },
+    { id: 'foraging', name: 'Foraging', mats: ['Wild Flower', 'Shy Wild Flower', 'Abidos Wild Flower'] },
+    { id: 'mining', name: 'Mining', mats: ['Iron Ore', 'Heavy Iron Ore', 'Abidos Iron Ore'] },
+    { id: 'fishing', name: 'Fishing', mats: ['Fish', 'Redflesh Fish', 'Abidos Solar Carp'] }
+  ];
+
   const DEFAULTS = {
     b1: 10, b2: 7,
     b5: 9, b6: 5,
-    e19: 203, e20: 422, e21: 2599,
+    e19: 200, e20: 400, e21: 2500,
     b26: 213, c26: 255
   };
-  const FIELDS = Object.keys(DEFAULTS);
-  const LS_KEY = 'abidos_calc_v2';
 
-  // ── Constants (recipe quantities / base costs) ──
+  const INPUT_IDS = Object.keys(DEFAULTS);
+  const LS_KEY = 'abidos_calc_v3';
+  let currentTab = 'logging';
+  let store = {};
+
   const R = {
     b: { baseGold: 400, baseCost: 400, timber: 86, tender: 45, abidos: 33 },
     c: { baseGold: 520, baseCost: 529, timber: 112, tender: 59, abidos: 43 }
   };
 
-  function load() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
-      FIELDS.forEach(k => {
-        const el = document.getElementById(k);
-        if (!el) return;
-        el.value = saved[k] !== undefined ? saved[k] : DEFAULTS[k];
-      });
-    } catch(e) {}
-  }
-
-  function save() {
-    const obj = {};
-    FIELDS.forEach(k => {
-      const el = document.getElementById(k);
-      if (el) obj[k] = parseFloat(el.value);
+  function init() {
+    // Generate tabs
+    const nav = document.getElementById('tabs-nav');
+    PROFESSIONS.forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = `tab-btn ${p.id === currentTab ? 'active' : ''}`;
+      btn.textContent = p.name;
+      btn.onclick = () => switchTab(p.id);
+      btn.id = `btn-${p.id}`;
+      nav.appendChild(btn);
     });
-    try { localStorage.setItem(LS_KEY, JSON.stringify(obj)); } catch(e) {}
-    flashSaved();
-  }
 
-  let saveTimer;
-  function flashSaved() {
-    clearTimeout(saveTimer);
-    const b = document.getElementById('saved-badge');
-    b.classList.add('show');
-    saveTimer = setTimeout(() => b.classList.remove('show'), 1600);
-  }
-
-  function resetDefaults() {
-    FIELDS.forEach(k => {
-      const el = document.getElementById(k);
-      if (el) el.value = DEFAULTS[k];
-    });
-    try { localStorage.removeItem(LS_KEY); } catch(e) {}
+    loadStore();
+    updateLabels();
+    fillInputs();
     recalc();
   }
 
+  function loadStore() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(LS_KEY));
+      if (saved) {
+        store = saved.data || {};
+        currentTab = saved.activeTab || 'logging';
+      }
+    } catch(e) {}
+    
+    // Ensure every profession has a data object
+    PROFESSIONS.forEach(p => {
+      if (!store[p.id]) store[p.id] = { ...DEFAULTS };
+    });
+  }
+
+  function saveStore() {
+    const dataToSave = {
+      activeTab: currentTab,
+      data: store
+    };
+    try { localStorage.setItem(LS_KEY, JSON.stringify(dataToSave)); } catch(e) {}
+  }
+
+  function switchTab(id) {
+    currentTab = id;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`btn-${id}`).classList.add('active');
+    
+    updateLabels();
+    fillInputs();
+    recalc();
+    saveStore();
+  }
+
+  function updateLabels() {
+    const p = PROFESSIONS.find(x => x.id === currentTab);
+    // AH Price Labels
+    document.getElementById('lbl-mat-1').textContent = p.mats[0];
+    document.getElementById('lbl-mat-2').textContent = p.mats[1];
+    document.getElementById('lbl-mat-3').textContent = p.mats[2];
+    document.getElementById('sub-mat-1').textContent = `i.e.: ${p.mats[0]}`;
+    document.getElementById('sub-mat-2').textContent = `i.e.: ${p.mats[1]}`;
+    document.getElementById('sub-mat-3').textContent = `i.e.: ${p.mats[2]}`;
+    
+    // Derived Labels
+    document.getElementById('der-mat-1').textContent = p.mats[0];
+    document.getElementById('der-mat-2').textContent = p.mats[1];
+    document.getElementById('der-mat-3').textContent = p.mats[2];
+
+    // Breakdown Labels
+    document.getElementById('br-mat-1').textContent = p.mats[0];
+    document.getElementById('br-mat-2').textContent = p.mats[1];
+    document.getElementById('br-mat-3').textContent = p.mats[2];
+  }
+
+  function fillInputs() {
+    const data = store[currentTab];
+    INPUT_IDS.forEach(id => {
+      document.getElementById(id).value = data[id];
+    });
+  }
+
+  function onInput() {
+    const data = store[currentTab];
+    INPUT_IDS.forEach(id => {
+      data[id] = parseFloat(document.getElementById(id).value) || 0;
+    });
+    recalc();
+    saveStore();
+    flashSaved();
+  }
+
+  function resetTab() {
+    store[currentTab] = { ...DEFAULTS };
+    fillInputs();
+    recalc();
+    saveStore();
+  }
+
+  // --- Logic Helpers ---
   function g(id) { return parseFloat(document.getElementById(id).value) || 0; }
   function set(id, html) { const el = document.getElementById(id); if(el) el.innerHTML = html; }
-
-  function fmtGold(v, decimals=2) {
-    return v.toFixed(decimals) + ' <span class="pct-hint">g</span>';
-  }
-  function fmtPct(v) {
-    return (v * 100).toFixed(2) + ' <span class="pct-hint">%</span>';
-  }
+  function fmtGold(v, decimals=2) { return v.toFixed(decimals) + ' <span class="pct-hint">g</span>'; }
+  function fmtPct(v) { return (v * 100).toFixed(2) + ' <span class="pct-hint">%</span>'; }
   function fmtNum(v, d=3) { return v.toFixed(d); }
-
-  function ceilTo1(v) { return Math.ceil(v); }
 
   function recalc() {
     const b1 = g('b1')/100, b2 = g('b2')/100;
@@ -695,48 +771,36 @@
     const e19 = g('e19'), e20 = g('e20'), e21 = g('e21');
     const b26 = g('b26'), c26 = g('c26');
 
-    // B3: Total Cost Reduction
     const b3 = b1 + b2;
     set('d-b3', fmtPct(b3));
 
-    // B8: Effective GS Chance = b6 * (1 + b5)
     const b8 = b6 * (1 + b5);
     set('d-b8', fmtPct(b8));
 
-    // B24: Avg Abidos per craft = 10*(1-b8) + 20*b8
     const b24 = 10 * (1 - b8) + 20 * b8;
     set('d-b24', fmtNum(b24, 4));
 
-    // Prices in gold
     const p19 = e19 / 100, p20 = e20 / 100, p21 = e21 / 100;
     set('d-p19', fmtGold(p19));
     set('d-p20', fmtGold(p20));
     set('d-p21', fmtGold(p21));
 
-    // Net Gold Cost
-    // B: B10 * (1 - b3)
     const b11 = R.b.baseGold * (1 - b3);
-    // C: FLOOR(C10 * (1-b3), 1)
     const c11 = Math.floor(R.c.baseGold * (1 - b3));
     set('r-b11', fmtGold(b11, 2));
     set('r-c11', fmtGold(c11, 0));
 
-    // Cost per batch
-    // B: (baseCost*(1-b3)) + timber*p19 + tender*p20 + abidos*p21
     const b23 = (R.b.baseCost * (1 - b3)) + (R.b.timber * p19) + (R.b.tender * p20) + (R.b.abidos * p21);
     const c23 = (R.c.baseCost * (1 - b3)) + (R.c.timber * p19) + (R.c.tender * p20) + (R.c.abidos * p21);
     set('r-b23', fmtGold(b23));
     set('r-c23', fmtGold(c23));
 
-    // Avg per craft (same for both cols)
     set('r-b24b', fmtNum(b24, 4));
     set('r-c24', fmtNum(b24, 4));
 
-    // Sale prices
     set('r-b26', fmtGold(b26, 0));
     set('r-c26', fmtGold(c26, 0));
 
-    // Fee = CEILING(price * 0.05, 1)
     const b27 = Math.ceil(b26 * 0.05);
     const c27 = Math.ceil(c26 * 0.05);
     set('d-b27', fmtGold(b27, 0));
@@ -744,11 +808,9 @@
     set('r-b27', fmtGold(b27, 0));
     set('r-c27', fmtGold(c27, 0));
 
-    // Net per Abidos (sale - fee)
     set('r-bnet', fmtGold(b26 - b27, 0));
     set('r-cnet', fmtGold(c26 - c27, 0));
 
-    // Expected Profit = b24 * (price - fee) - costPerBatch
     const b28 = b24 * (b26 - b27) - b23;
     const c28 = b24 * (c26 - c27) - c23;
 
@@ -771,15 +833,20 @@
     btn.childNodes[2].textContent = ` ${label} `;
   }
 
-  function onInput() { recalc(); save(); }
+  let saveTimer;
+  function flashSaved() {
+    clearTimeout(saveTimer);
+    const b = document.getElementById('saved-badge');
+    b.classList.add('show');
+    saveTimer = setTimeout(() => b.classList.remove('show'), 1000);
+  }
 
-  FIELDS.forEach(k => {
-    const el = document.getElementById(k);
-    if (el) el.addEventListener('input', onInput);
+  INPUT_IDS.forEach(id => {
+    document.getElementById(id).addEventListener('input', onInput);
   });
 
-  load();
-  recalc();
+  // Start
+  init();
 </script>
 </body>
 </html>
