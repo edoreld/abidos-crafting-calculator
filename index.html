@@ -152,6 +152,13 @@
       font-weight: 600;
       font-size: 14.5px;
     }
+    label .label-sub {
+      display: block;
+      font-size: 12px;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
 
     input[type="number"] {
       width: 100px;
@@ -393,7 +400,7 @@
 <header>
   <p class="logo-ornament">Crafting Tool</p>
   <h1>Abidos <span>Calculator</span></h1>
-  <p class="subtitle">Profit estimation for Abidos Timber crafting</p>
+  <p class="subtitle">Profit estimation for Abidos crafting</p>
 </header>
 
 <div class="wrapper">
@@ -437,7 +444,7 @@
       <span class="derived-value" id="d-b8">—</span>
     </div>
     <div class="derived-row">
-      <span class="derived-label">Avg Abidos per Craft</span>
+      <span class="derived-label">Avg Output per Craft</span>
       <span class="derived-value" id="d-b24">—</span>
     </div>
   </div>
@@ -447,29 +454,29 @@
     <p class="card-title">Auction House — Material Prices</p>
     <div class="field-group">
       <div class="field">
-        <label><strong>Timber</strong></label>
+        <label><strong>Normal Material</strong><span class="label-sub">i.e.: Timber</span></label>
         <input type="number" id="e19" step="1" min="1" value="203" />
       </div>
       <div class="field">
-        <label><strong>Tender Timber</strong></label>
+        <label><strong>Uncommon Material</strong><span class="label-sub">i.e.: Tender Timber</span></label>
         <input type="number" id="e20" step="1" min="1" value="422" />
       </div>
       <div class="field">
-        <label><strong>Abidos Timber</strong></label>
+        <label><strong>Rare Material</strong><span class="label-sub">i.e.: Abidos Timber</span></label>
         <input type="number" id="e21" step="1" min="1" value="2599" />
       </div>
     </div>
     <div class="divider-row">Gold Prices per Unit</div>
     <div class="derived-row">
-      <span class="derived-label">Timber</span>
+      <span class="derived-label">Normal Material</span>
       <span class="derived-value" id="d-p19">—</span>
     </div>
     <div class="derived-row">
-      <span class="derived-label">Tender Timber</span>
+      <span class="derived-label">Uncommon Material</span>
       <span class="derived-value" id="d-p20">—</span>
     </div>
     <div class="derived-row">
-      <span class="derived-label">Abidos Timber</span>
+      <span class="derived-label">Rare Material</span>
       <span class="derived-value" id="d-p21">—</span>
     </div>
   </div>
@@ -550,17 +557,17 @@
               <div class="rg-cell sublabel"></div>
             </div>
             <div class="rg-row">
-              <div class="rg-cell label">Timber</div>
+              <div class="rg-cell label">Normal Material <span style="color:var(--text-muted);font-size:12px">(i.e.: Timber)</span></div>
               <div class="rg-cell val val-b">86</div>
               <div class="rg-cell val val-c">112</div>
             </div>
             <div class="rg-row">
-              <div class="rg-cell label">Tender Timber</div>
+              <div class="rg-cell label">Uncommon Material <span style="color:var(--text-muted);font-size:12px">(i.e.: Tender Timber)</span></div>
               <div class="rg-cell val val-b">45</div>
               <div class="rg-cell val val-c">59</div>
             </div>
             <div class="rg-row">
-              <div class="rg-cell label">Abidos Timber</div>
+              <div class="rg-cell label">Rare Material <span style="color:var(--text-muted);font-size:12px">(i.e.: Abidos Timber)</span></div>
               <div class="rg-cell val val-b">33</div>
               <div class="rg-cell val val-c">43</div>
             </div>
@@ -576,7 +583,7 @@
               <div class="rg-cell val val-c" id="r-c23">—</div>
             </div>
             <div class="rg-row">
-              <div class="rg-cell label">Avg Abidos per Craft</div>
+              <div class="rg-cell label">Avg Output per Craft</div>
               <div class="rg-cell val val-b" id="r-b24b">—</div>
               <div class="rg-cell val val-c" id="r-c24">—</div>
             </div>
@@ -587,7 +594,7 @@
               <div class="rg-cell sublabel"></div>
             </div>
             <div class="rg-row">
-              <div class="rg-cell label">Sale Price / Abidos</div>
+              <div class="rg-cell label">Sale Price / Output</div>
               <div class="rg-cell val val-b" id="r-b26">—</div>
               <div class="rg-cell val val-c" id="r-c26">—</div>
             </div>
@@ -597,7 +604,7 @@
               <div class="rg-cell val val-c" id="r-c27">—</div>
             </div>
             <div class="rg-row">
-              <div class="rg-cell label">Net per Abidos</div>
+              <div class="rg-cell label">Net per Output</div>
               <div class="rg-cell val val-b" id="r-bnet">—</div>
               <div class="rg-cell val val-c" id="r-cnet">—</div>
             </div>
